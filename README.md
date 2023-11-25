@@ -16,5 +16,5 @@ The MATLAB code for MV-RTSC needs some toolboxes:
 
 # Networks:
 All networks used in our paper are available at [Google Drive](https://drive.google.com/drive/folders/1T8AITuQZCbCB52PELprIVb75d4-6hi20). 
-Each netword is a mat file containing 2 variables the djacancy tensor and theground truth label. 
+Each network is a mat file containing 2 variables the djacancy tensor and theground truth label. 
 
