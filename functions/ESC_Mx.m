@@ -2,7 +2,7 @@ function [Plabel,Timecost] = ESC_Mx(A,mu,lambda,numClust,pr)
 % Enhanced Community Detection in Multiplex Networks via Tensor Weighted
 % Schatten p-norm code
 % Definition:
-%     [Plabel,Timecost]=ExMSC(A,mu,lambda,numClust,pr)
+%     [Plabel,Timecost]=ESC_Mx(A,mu,lambda,numClust,pr)
 %
 % Inputs:
 % A               3rd mode tensor [n*n*V], non-negative adjacency tensor.
