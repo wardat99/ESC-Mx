@@ -11,9 +11,9 @@ lambda =  0.1;           %best at  0.1
 pr=0.6;                  %best at 0.6
 
 for i=1:10
-    fprintf('--------MxESC start, attempt number %d--------\n', i);
-[Plabel,Timecost(i)] = MxESC(A,mu,lambda,numClust,pr);
-   fprintf('--------MxESC end, attempt number %d--------\n', i);
+    fprintf('--------ESC_Mx start, attempt number %d--------\n', i);
+[Plabel,Timecost(i)] = ESC_Mx(A,mu,lambda,numClust,pr);
+   fprintf('--------ESC_Mx end, attempt number %d--------\n', i);
 acc(i) =  Compute_accuracy(truth,Plabel);
         [~,nmi(i) ,~] = compute_nmi(truth,Plabel);
         [f(i),p(i),r(i)] = compute_f(truth,Plabel);
