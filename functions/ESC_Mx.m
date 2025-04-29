@@ -1,4 +1,4 @@
-function [Plabel,Timecost] = ExMSC(A,mu,lambda,numClust,pr)
+function [Plabel,Timecost] = ESC_Mx(A,mu,lambda,numClust,pr)
 % Enhanced Community Detection in Multiplex Networks via Tensor Weighted
 % Schatten p-norm code
 % Definition:
@@ -28,16 +28,7 @@ function [Plabel,Timecost] = ExMSC(A,mu,lambda,numClust,pr)
 
 
 [n1,n2,n3]=size(A);
-
-if n3==2 
-    beta = [0.5 5]';
-elseif n3==3
-    beta = [0.5 5 100]';
-elseif n3==4
-    beta = [1 5 100 200]';    
-elseif n3==5
-    beta = [0.5 5 100 200 350]';
-end
+[beta] = getBeta(n3);
 I=eye(n1,n2);
 Z=eps*ones(size(A));
 E=Z; Y1=Z; Y2=Z;  
@@ -62,55 +53,12 @@ for i=1:max_iter
         
         % update E
         
-        if n3==2
-            
-        F = [A(:,:,1)-A(:,:,1)*Z(:,:,1)+Y1(:,:,1)/gamma1;...
-        A(:,:,2)-A(:,:,2)*Z(:,:,2)+Y1(:,:,2)/gamma1];
-        [Econcat] = solve_l1l2(F,mu/gamma1);
-        E(:,:,1) = Econcat(1:size(A(:,:,1),1),:);
-        E(:,:,2) = Econcat(size(A(:,:,1),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1),:);
-        
-         
-            
-        elseif n3==3
-         
-         F = [A(:,:,1)-A(:,:,1)*Z(:,:,1)+Y1(:,:,1)/gamma1;...
-         A(:,:,2)-A(:,:,2)*Z(:,:,2)+Y1(:,:,2)/gamma1;...
-         A(:,:,3)-A(:,:,3)*Z(:,:,3)+Y1(:,:,3)/gamma1];
-         [Econcat] = solve_l1l2(F,mu/gamma1);
-         E(:,:,1) = Econcat(1:size(A(:,:,1),1),:);
-         E(:,:,2) = Econcat(size(A(:,:,1),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1),:);
-         E(:,:,3) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+1:end,:);
-        
-            
-        elseif n3==4
-                
-        F = [A(:,:,1)-A(:,:,1)*Z(:,:,1)+Y1(:,:,1)/gamma1;...
-        A(:,:,2)-A(:,:,2)*Z(:,:,2)+Y1(:,:,2)/gamma1;...
-        A(:,:,3)-A(:,:,3)*Z(:,:,3)+Y1(:,:,3)/gamma1;...
-        A(:,:,4)-A(:,:,4)*Z(:,:,4)+Y1(:,:,4)/gamma1];
-        [Econcat] = solve_l1l2(F,mu/gamma1);
-        E(:,:,1) = Econcat(1:size(A(:,:,1),1),:);
-        E(:,:,2) = Econcat(size(A(:,:,1),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1),:);
-        E(:,:,3) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1),:);
-        E(:,:,4) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1)+1:end,:);
-                
-        elseif n3==5
-            
-        F = [A(:,:,1)-A(:,:,1)*Z(:,:,1)+Y1(:,:,1)/gamma1;...
-        A(:,:,2)-A(:,:,2)*Z(:,:,2)+Y1(:,:,2)/gamma1;
-        A(:,:,3)-A(:,:,3)*Z(:,:,3)+Y1(:,:,3)/gamma1;...
-        A(:,:,4)-A(:,:,4)*Z(:,:,4)+Y1(:,:,4)/gamma1;
-        A(:,:,5)-A(:,:,5)*Z(:,:,5)+Y1(:,:,5)/gamma1;];
-            [Econcat] = solve_l1l2(F,mu/gamma1);
-        E(:,:,1) = Econcat(1:size(A(:,:,1),1),:);
-        E(:,:,2) = Econcat(size(A(:,:,1),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1),:);
-        E(:,:,3) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1),:);
-        E(:,:,4) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1)+1:size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1)+size(A(:,:,4),1),:);
-        E(:,:,5) = Econcat(size(A(:,:,1),1)+size(A(:,:,2),1)+size(A(:,:,3),1)+size(A(:,:,4),1)+1:end,:);
-        
+        for v=1:n3
+            Emod(:,:,v)=A(:,:,v)-A(:,:,v)*Z(:,:,v)+Y1(:,:,v)/gamma1;
         end
-       
+        
+        E = l21_operator(Emod,mu,gamma1);
+        
         % update Z
         
         
